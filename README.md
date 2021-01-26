@@ -1,4 +1,4 @@
-# Project: Battery Usage
+# Project: User Wait
 
 ## Introduction
 
