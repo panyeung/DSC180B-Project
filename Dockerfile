@@ -4,7 +4,7 @@
 
 # data science notebook
 # https://hub.docker.com/repository/docker/ucsdets/datascience-notebook/tags
-FROM jupyter/scipy-notebook:d113a601dbb8
+FROM jupyter/datascience-notebook:python-3.8.6
 
 #get Rapidsai
 #https://hub.docker.com/r/rapidsai/rapidsai/
