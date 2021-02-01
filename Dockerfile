@@ -9,7 +9,7 @@ FROM jupyter/scipy-notebook:d113a601dbb8
 #get Rapidsai
 #https://hub.docker.com/r/rapidsai/rapidsai/
 #https://rapids.ai/start.html
-FROM rapidsai/rapidsai:cuda10.1-runtime-ubuntu16.04-py3.7
+#FROM rapidsai/rapidsai:cuda10.1-runtime-ubuntu16.04-py3.7
 
 
 LABEL maintainer="UC San Diego ITS/ETS <ets-consult@ucsd.edu>"
