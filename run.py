@@ -10,7 +10,7 @@ sys.path.insert(0, 'src/analysis')
 sys.path.insert(0, 'src/model')
 
 from etl import get_data
-#from analysis import compute_aggregates
+from eda import analyze_data
 #from model import train
 
 
@@ -22,12 +22,12 @@ def main(targets):
     `main` runs the targets in order of data=>analysis=>model.
     '''
 
+    data = None
     if 'data' in targets:
         with open('config/data-params.json', 'r', encoding = "utf-8") as fh:
             data_cfg = json.load(fh)
-
         # make the data target
-        get_data(**data_cfg)
+        data = get_data(**data_cfg)
 
 
     if 'analysis' in targets:
@@ -35,7 +35,7 @@ def main(targets):
             analysis_cfg = json.load(fh)
 
         # make the data target
-        compute_aggregates(**analysis_cfg)
+        analyze_data(data, **analysis_cfg)
 
     if 'model' in targets:
         with open('config/model-params.json') as fh:
