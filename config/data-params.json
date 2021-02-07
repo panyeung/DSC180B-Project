@@ -1,0 +1,7 @@
+{
+  "data_path": "test",
+  "dynamic_name": "mousewait_all_10000.csv",
+  "static_name": "system_info.csv",
+  "merge_how": "left",
+  "merge_on": "guid"
+}

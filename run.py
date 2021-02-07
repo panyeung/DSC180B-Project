@@ -1,1 +1,58 @@
-esrv --start --output_folder "C:\temp\_xlsdk\run\windows\outputs" --time_in_ms --pause 1000 --no_pl --end_on_error --priority_boost --kernel_priority_boost --shutdown_priority_boost --do_not_use_system_error_logs --resume_delay 30000 --library "C:\temp\_xlsdk\run\windows\Release\64\intel_modeler.dll" --device_options " time=yes generate_key_file=yes performance=no in_cycle_performance=no output=AllFOUR output_folder='C:\temp\_xlsdk\run\windows\outputs' lock_xls=yes deferred_logger_stop=yes do_not_signal_flush=yes ll='C:\temp\_xlsdk\run\windows\Release\64\sql_logger.dll','db_differential_elaspsed_time=yes db_wal=yes db_wal_autocheckpoint=0 db_cache=yes db_cache_size=auto db_synchronous=off db_journal_mode=off db_locking_mode=exclusive delayed_dctl=summarize dctl_process_delay=90000 do_not_signal_delayed_dctl=yes' il='C:\temp\_xlsdk\run\windows\Release\64\intel_acpi_battery_input.dll' il='C:\temp\_xlsdk\run\windows\Release\64\intel_devices_use_input.dll'  il='C:\temp\_xlsdk\run\windows\Release\64\intel_process_input.dll' il='C:\temp\_xlsdk\run\windows\Release\64\intel_user_waiting_input.dll' il='C:\temp\_xlsdk\run\windows\Release\64\intel_foreground_input.dll' " --address 127.0.0.1 --port 49260
+#!/usr/bin/env python
+
+import sys
+import json
+import subprocess
+import time
+
+sys.path.insert(0, 'src/data')
+sys.path.insert(0, 'src/analysis')
+sys.path.insert(0, 'src/model')
+
+from etl import get_data
+#from analysis import compute_aggregates
+#from model import train
+
+
+def main(targets):
+    '''
+    Runs the main project pipeline logic, given the targets.
+    targets must contain: 'data', 'analysis', 'model'.
+
+    `main` runs the targets in order of data=>analysis=>model.
+    '''
+
+    if 'data' in targets:
+        with open('config/data-params.json', 'r', encoding = "utf-8") as fh:
+            data_cfg = json.load(fh)
+
+        # make the data target
+        get_data(**data_cfg)
+
+
+    if 'analysis' in targets:
+        with open('config/analysis-params.json') as fh:
+            analysis_cfg = json.load(fh)
+
+        # make the data target
+        compute_aggregates(**analysis_cfg)
+
+    if 'model' in targets:
+        with open('config/model-params.json') as fh:
+            model_cfg = json.load(fh)
+
+        # make the data target
+        train(data, **model_cfg)
+
+    return
+
+
+if __name__ == '__main__':
+    # run via:
+    # python main.py data model
+    targets = sys.argv[1:]
+    print("The arguments are:", str(sys.argv))
+    print("The name of the script:", sys.argv[0])
+    print("Number of arguments:", len(sys.argv))
+    print("targets:", targets)
+    main(targets)
