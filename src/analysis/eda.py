@@ -88,5 +88,5 @@ def analyze_data(arg1, year, dynamic_cols, target, wait_th, cpu_th,nominal):
                                margins = False)
         chi(data_crosstab)
         print("")
-    #df.to_csv("/data/output/processed.csv")
+    #df.to_csv("/data/output/processed_data.csv")
     return df
