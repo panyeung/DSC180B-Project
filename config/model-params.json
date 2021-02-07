@@ -1,0 +1,9 @@
+{
+  "data_path": "data/output/",
+  "data_name": "processed_data.csv",
+  "test_size": "0.2",
+  "model": "decision tree",
+  "c": "10",
+  "save_model": "True",
+  "load_model": "False",
+}
