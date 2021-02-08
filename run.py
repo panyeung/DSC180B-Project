@@ -11,7 +11,7 @@ sys.path.insert(0, 'src/model')
 
 from etl import get_data
 from eda import analyze_data
-#from model import train
+from model import train
 
 
 def main(targets):
@@ -42,7 +42,7 @@ def main(targets):
             model_cfg = json.load(fh)
 
         # make the data target
-        train(data, **model_cfg)
+        train(**model_cfg)
 
     return
 
