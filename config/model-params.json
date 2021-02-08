@@ -5,5 +5,5 @@
   "model": "decision tree",
   "c": "10",
   "save_model": "True",
-  "load_model": "False",
+  "load_model": "False"
 }
