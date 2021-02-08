@@ -1,48 +1,29 @@
-  
-# 1) choose base container
-# generally use the most recent tag
+FROM jupyter/datascience-notebook:python-3.8.6
 
-# data science notebook
-# https://hub.docker.com/repository/docker/ucsdets/datascience-notebook/tags
-FROM jupyter/scipy-notebook:d113a601dbb8
-
-#get Rapidsai
-#https://hub.docker.com/r/rapidsai/rapidsai/
-#https://rapids.ai/start.html
-#FROM rapidsai/rapidsai:cuda10.1-runtime-ubuntu16.04-py3.7
-
-
-LABEL maintainer="UC San Diego ITS/ETS <ets-consult@ucsd.edu>"
-
-# CUDA Toolkit
-RUN conda install -y cudatoolkit=10.1 cudnn nccl && \
-    conda clean --all -f -y
-
-# Tensorflow 2.*
-RUN pip install --no-cache-dir --upgrade-strategy only-if-needed \
-    tensorflow jupyter-tensorboard
-
-#Run the rapid
-#RUN conda create -n rapids-0.17 -c rapidsai -c nvidia -c conda-forge \
-    #-c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.1
-
-# Tensorflow 1.15
-# RUN pip install --no-cache-dir tensorflow-gpu==1.15
-
-# Pytorch 1.7.*
-# Copy-paste command from https://pytorch.org/get-started/locally/#start-locally
-# Use the options stable, linux, pip, python and appropriate CUDA version
-RUN pip install --no-cache-dir \
-    torch==1.7.1+cu101 torchvision==0.8.2+cu101 torchaudio==0.7.2 \
-    -f https://download.pytorch.org/whl/torch_stable.html
-
-# #  Add startup script
 USER root
-COPY /run_jupyter.sh /
-RUN chmod 755 /run_jupyter.sh
 
-# # 4) change back to notebook user
-USER $NB_UID
+COPY /scripts /usr/share/datahub/scripts/
+COPY /scripts/run_jupyter.sh /
+COPY /scripts/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
-# # Override command to disable running jupyter notebook at launch
-# # CMD ["/bin/bash"]
+# nbconvert downgrade needed for nbgrader to work
+RUN /usr/share/datahub/scripts/install-all.sh && \
+	pip install pandas --upgrade && \
+	pip install nltk && \
+    pip install nbconvert==5.6.1 && \
+	cat /usr/share/datahub/scripts/canvas_exporter.py > /opt/conda/lib/python3.8/site-packages/nbgrader/plugins/export.py && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER && \
+    chown -R jovyan:users /opt/conda/etc/jupyter/nbconfig && \
+    chmod -R +r /opt/conda/etc/jupyter/nbconfig
+
+# make compatible with DSMLP version of jupyterhub
+RUN pip install jupyterhub==0.9.2
+
+# testing directory
+COPY /tests /usr/share/datahub/tests/datahub-base-notebook
+RUN chown -R 1000:1000 /usr/share/datahub/tests/datahub-base-notebook && \
+    chmod -R +rwx /usr/share/datahub/tests/datahub-base-notebook
+
+USER jovyan
+WORKDIR /home/jovyan
