@@ -9,7 +9,7 @@ FROM jupyter/scipy-notebook:d113a601dbb8
 #get Rapidsai
 #https://hub.docker.com/r/rapidsai/rapidsai/
 #https://rapids.ai/start.html
-FROM rapidsai/rapidsai:cuda10.1-runtime-ubuntu16.04-py3.7
+#FROM rapidsai/rapidsai:cuda10.1-runtime-ubuntu16.04-py3.7
 
 
 LABEL maintainer="UC San Diego ITS/ETS <ets-consult@ucsd.edu>"
@@ -23,8 +23,8 @@ RUN pip install --no-cache-dir --upgrade-strategy only-if-needed \
     tensorflow jupyter-tensorboard
 
 #Run the rapid
-RUN conda create -n rapids-0.17 -c rapidsai -c nvidia -c conda-forge \
-    -c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.1
+#RUN conda create -n rapids-0.17 -c rapidsai -c nvidia -c conda-forge \
+    #-c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.1
 
 # Tensorflow 1.15
 # RUN pip install --no-cache-dir tensorflow-gpu==1.15
