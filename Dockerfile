@@ -1,3 +1,4 @@
+  
 # 1) choose base container
 # generally use the most recent tag
 
@@ -30,8 +31,13 @@ RUN pip install --no-cache-dir networkx scipy python-louvain
 
 RUN conda install --quiet --yes geopandas
 
-RUN pip install babypandas
+RUN conda install --yes rapidsai -c nvidia -c numba -c conda-forge cudf=0.18 python=3.7 cudatoolkit=10.2
 
+
+# 4) change back to notebook user
+COPY /run_jupyter.sh /
+RUN chmod 755 /run_jupyter.sh
+USER $NB_UID
 
 # Override command to disable running jupyter notebook at launch
 # CMD ["/bin/bash"]
