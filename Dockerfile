@@ -31,7 +31,8 @@ RUN pip install --no-cache-dir networkx scipy python-louvain
 
 RUN conda install --quiet --yes geopandas
 
-RUN conda install --yes rapidsai -c nvidia -c numba -c conda-forge cudf=0.18 python=3.7 cudatoolkit=10.2
+RUN conda install -c rapidsai -c nvidia -c numba -c conda-forge \
+    cudf=0.18 python=3.7 cudatoolkit=10.2
 
 
 # 4) change back to notebook user
