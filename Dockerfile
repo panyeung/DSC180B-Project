@@ -3,40 +3,39 @@
 
 # data science notebook
 # https://hub.docker.com/repository/docker/ucsdets/datascience-notebook/tags
-FROM jupyter/scipy-notebook:d113a601dbb8
+ARG BASE_CONTAINER=ucsdets/datascience-notebook:2020.2-stable
+
+# scipy/machine learning (tensorflow)
+# https://hub.docker.com/repository/docker/ucsdets/scipy-ml-notebook/tags
+# ARG BASE_CONTAINER=ucsdets/scipy-ml-notebook:2020.2-stable
+
+FROM ucsdets/datascience-notebook:2020.2-stable
 
 LABEL maintainer="UC San Diego ITS/ETS <ets-consult@ucsd.edu>"
 
-# CUDA Toolkit
-RUN conda install -y cudatoolkit=10.1 cudnn nccl && \
-    conda clean --all -f -y
-
-
-
-RUN conda install -c rapidsai -c nvidia -c numba -c conda-forge \
-    cudf=0.13 python=3.7 cudatoolkit=10.1
-# Tensorflow 2.*
-RUN pip install --no-cache-dir --upgrade-strategy only-if-needed \
-    tensorflow jupyter-tensorboard
-
-
-# Tensorflow 1.15
-# RUN pip install --no-cache-dir tensorflow-gpu==1.15
-
-# Pytorch 1.7.*
-# Copy-paste command from https://pytorch.org/get-started/locally/#start-locally
-# Use the options stable, linux, pip, python and appropriate CUDA version
-RUN pip install --no-cache-dir \
-    torch==1.7.1+cu101 torchvision==0.8.2+cu101 torchaudio==0.7.2 \
-    -f https://download.pytorch.org/whl/torch_stable.html
-
-# #  Add startup script
+# 2) change to root to install packages
 USER root
-COPY /run_jupyter.sh /
-RUN chmod 755 /run_jupyter.sh
 
-# # 4) change back to notebook user
-USER $NB_UID
+RUN	apt-get install htop
 
-# # Override command to disable running jupyter notebook at launch
-# # CMD ["/bin/bash"]
+RUN	apt-get install -y aria2
+
+RUN	apt-get install -y nmap
+
+RUN	apt-get install -y traceroute
+
+
+
+# 3) install packages
+RUN pip install --no-cache-dir networkx scipy python-louvain
+
+#Install dask-ml
+RUN conda install -c conda-forge dask-ml
+
+RUN conda install --quiet --yes geopandas
+
+RUN pip install babypandas
+
+
+# Override command to disable running jupyter notebook at launch
+# CMD ["/bin/bash"]
