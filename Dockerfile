@@ -1,44 +1,42 @@
-  
 # 1) choose base container
 # generally use the most recent tag
 
 # data science notebook
 # https://hub.docker.com/repository/docker/ucsdets/datascience-notebook/tags
-ARG BASE_CONTAINER=ucsdets/datascience-notebook:2020.2-stable
-
-# scipy/machine learning (tensorflow)
-# https://hub.docker.com/repository/docker/ucsdets/scipy-ml-notebook/tags
-# ARG BASE_CONTAINER=ucsdets/scipy-ml-notebook:2020.2-stable
-
-FROM ucsdets/datascience-notebook:2020.2-stable
+FROM jupyter/scipy-notebook:d113a601dbb8
 
 LABEL maintainer="UC San Diego ITS/ETS <ets-consult@ucsd.edu>"
 
-# 2) change to root to install packages
-USER root
-
-RUN	apt-get install htop
-
-RUN	apt-get install -y aria2
-
-RUN	apt-get install -y nmap
-
-RUN	apt-get install -y traceroute
+# CUDA Toolkit
+RUN conda install -y cudatoolkit=10.1 cudnn nccl && \
+    conda clean --all -f -y
 
 
-# 3) install packages
-RUN pip install --no-cache-dir networkx scipy python-louvain
-
-RUN conda install --quiet --yes geopandas
 
 RUN conda install -c rapidsai -c nvidia -c numba -c conda-forge \
-    cudf=0.18 python=3.7 cudatoolkit=10.2
+    cudf=0.13 python=3.7 cudatoolkit=10.1
+# Tensorflow 2.*
+RUN pip install --no-cache-dir --upgrade-strategy only-if-needed \
+    tensorflow jupyter-tensorboard
 
 
-# 4) change back to notebook user
+# Tensorflow 1.15
+# RUN pip install --no-cache-dir tensorflow-gpu==1.15
+
+# Pytorch 1.7.*
+# Copy-paste command from https://pytorch.org/get-started/locally/#start-locally
+# Use the options stable, linux, pip, python and appropriate CUDA version
+RUN pip install --no-cache-dir \
+    torch==1.7.1+cu101 torchvision==0.8.2+cu101 torchaudio==0.7.2 \
+    -f https://download.pytorch.org/whl/torch_stable.html
+
+# #  Add startup script
+USER root
 COPY /run_jupyter.sh /
 RUN chmod 755 /run_jupyter.sh
+
+# # 4) change back to notebook user
 USER $NB_UID
 
-# Override command to disable running jupyter notebook at launch
-# CMD ["/bin/bash"]
+# # Override command to disable running jupyter notebook at launch
+# # CMD ["/bin/bash"]
