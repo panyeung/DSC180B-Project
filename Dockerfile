@@ -26,9 +26,9 @@ RUN pip install --no-cache-dir \
     -f https://download.pytorch.org/whl/torch_stable.html
 
 # #  Add startup script
-USER root
-COPY /run_jupyter.sh /
-RUN chmod 755 /run_jupyter.sh
+#USER root
+#COPY /run_jupyter.sh /
+#RUN chmod 755 /run_jupyter.sh
 
 # # 4) change back to notebook user
 USER $NB_UID
