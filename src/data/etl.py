@@ -19,6 +19,10 @@ def get_data(data_path, dynamic_name, static_name, col_to_transform, num_cols, s
     common_guid = set(dynamic.guid.unique()) & set(static.guid.unique())
     static_filter = static[static.guid.apply(lambda x: x in common_guid)].reset_index(drop = True)
     static = static_filter[static_cols + ['guid']]
-    static_filter.to_csv("data/output/data_output.csv", index = False)
+
+    # print(dynamic.head())
+    # print(static.head())
+
+    static.to_csv("data/output/data_output.csv", index = False)
 
     return dynamic, static

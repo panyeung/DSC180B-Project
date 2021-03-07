@@ -29,11 +29,9 @@ def main(targets):
         # make the data target
         data = get_data(**data_cfg)
 
-
     if 'analysis' in targets:
         with open('config/analysis-params.json') as fh:
             analysis_cfg = json.load(fh)
-
         # make the data target
         analyze_data(data, **analysis_cfg)
 

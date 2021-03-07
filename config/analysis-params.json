@@ -4,6 +4,7 @@
   "target": "wait_msecs",
   "wait_th": "10000",
   "cpu_th": "100",
-  
-  "nominal": ["chassistype", "os", "graphicscardclass", "cpucode", "persona"]
+
+  "nominal": ["chassistype", "os", "graphicscardclass", "cpucode", "persona", "processornumber", "age_category"],
+  "N": "1000"
 }
